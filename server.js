@@ -5,7 +5,7 @@
 //
 var http = require('http');
 var path = require('path');
-
+var ejs = require('ejs');
 var async = require('async');
 var socketio = require('socket.io');
 var express = require('express');
@@ -16,11 +16,38 @@ var express = require('express');
 // Creates a new instance of SimpleServer with the following options:
 //  * `port` - The HTTP port to listen on. If `process.env.PORT` is set, _it overrides this value_.
 //
-var router = express();
-var server = http.createServer(router);
+var app = express();
+var server = http.createServer(app);
 var io = socketio.listen(server);
 
-router.use(express.static(path.resolve(__dirname, 'client')));
+app.set('views', path.join(__dirname, 'views'));
+app.engine('html', require("ejs").renderFile);
+app.set('view engine', 'html');
+app.use(express.static(path.resolve(__dirname, 'client')));
+
+/*
+app.configure(function () {
+    app.set('port', process.env.PORT || 3000);
+    app.set('views', __dirname + '/views');
+    app.set('view engine', 'html');
+    app.use(express.logger('dev'));
+    app.use(app.router);
+});
+*/
+
+
+
+app.get('/', function(req, res) {
+  res.render('index', { title: 'Home Page.  ' });
+});
+
+app.get('/walmart',  function(req, res) {
+  res.render('walmart', { title: 'Walmart  ' });
+});
+
+app.configure('development', function () {
+    app.use(express.errorHandler());
+});
 var messages = [];
 var sockets = [];
 
@@ -78,7 +105,14 @@ function broadcast(event, data) {
   });
 }
 
+
 server.listen(process.env.PORT || 3000, process.env.IP || "0.0.0.0", function(){
   var addr = server.address();
-  console.log("Chat server listening at", addr.address + ":" + addr.port);
+  console.log("Chat server listening for foobar at: ", addr.address + ":" + addr.port);
 });
+
+/*
+server.listen(app.get('port'), function () {
+    console.log("Express server for Rich listening on port " + app.get('port'));
+});
+*/
