@@ -45,6 +45,10 @@ app.get('/walmart',  function(req, res) {
   res.render('walmart', { title: 'Walmart  ' });
 });
 
+app.get('/newpage',  function(req, res) {
+  res.render('newpage', { title: 'newpage  ' });
+});
+
 app.configure('development', function () {
     app.use(express.errorHandler());
 });
