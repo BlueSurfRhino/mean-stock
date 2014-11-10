@@ -4,6 +4,11 @@ window.onload = function () { dcjsdemo(); }; //Render chart first thing
 // Globals
 var dcReset;  //Connect to "Reset" button with onclick="dcReset()" call
 
+function foobar()
+{
+    d3.select('#foobartext').append("p").text("FOOOOO!!!");
+}
+
 function dcjsdemo() {
 
     // Debug output routine from Data Visualization with D3.js Cookbook 
