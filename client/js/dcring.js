@@ -6,7 +6,7 @@ var dcReset;  //Connect to "Reset" button with onclick="dcReset()" call
 
 function foobar()
 {
-    d3.select('#foobartext').append("p").text("FOOOOO!!!");
+    d3.select('#foobartext').append("p").text("FOO!!!");
 }
 
 function dcjsdemo() {
@@ -35,11 +35,15 @@ function dcjsdemo() {
 var w = 400;
 var h = 400;
 var r = h/2;
+
+
 var color = d3.scale.category20c();
 
 var data = [{"label":"News", "value":30}, 
 		          {"label":"Chart", "value":30}, 
 		          {"label":"Events", "value":30}];
+
+var bigbuy =  [{"label":"BUY!", "value":1}];
 
 
 var vis = d3.select('#navring').append("svg:svg").data([data]).attr("width", w).attr("height", h).append("svg:g").attr("transform", "translate(" + r + "," + r + ")");
@@ -70,7 +74,17 @@ arcs.append("svg:text").attr("transform", function(d){
     return "translate(" + arc.centroid(d) + ")";}).attr("text-anchor", "middle").text( function(d, i) {
     return data[i].label;}
 		);  
+/*
+var svgBox = d3.select('#navring').append("svg")
+                                  .attr("width", w)
+                                  .attr("height", h);*/
 
+var circle = vis.append("circle")
+                   .attr("cx", 0)
+                   .attr("cy", 0)
+                   .attr("r", 99)
+                   .style("fill", "steelblue");
 
 
 }
+
