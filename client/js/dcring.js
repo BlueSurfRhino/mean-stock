@@ -74,16 +74,23 @@ arcs.append("svg:text").attr("transform", function(d){
     return "translate(" + arc.centroid(d) + ")";}).attr("text-anchor", "middle").text( function(d, i) {
     return data[i].label;}
 		);  
-/*
-var svgBox = d3.select('#navring').append("svg")
-                                  .attr("width", w)
-                                  .attr("height", h);*/
+
 
 var circle = vis.append("circle")
                    .attr("cx", 0)
                    .attr("cy", 0)
                    .attr("r", 99)
                    .style("fill", "steelblue");
+
+var circletxt = vis.selectAll("text")
+    .data("bigbuy")
+    .enter()
+    .append("text")
+    .text("BUY")
+    .attr("font-family", "sans-serif")
+    .attr("font-size", "29px")
+    .attr("fill", "Black")
+    .attr("text-anchor", "middle");
 
 
 }
