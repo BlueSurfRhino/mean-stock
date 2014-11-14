@@ -1,104 +1,98 @@
 // Events
 window.onload = function() {
-    dcjsdemo();
-}; //Render chart first thing
-
-// Globals
-var dcReset; //Connect to "Reset" button with onclick="dcReset()" call
-
-function foobar() {
-    d3.select('#foobartext').append("p").text("FOO!!!");
-}
-
-function dcjsdemo() {
-
-    // Debug output routine from Data Visualization with D3.js Cookbook 
-    function printFilter(filter) {
-        var f = eval(filter);
-        if (typeof(f.length) != "undefined") {}
-        else {}
-        if (typeof(f.top) != "undefined") {
-            f = f.top(Infinity);
-        }
-        else {}
-        if (typeof(f.dimension) != "undefined") {
-            f = f.dimension(function(d) {
-                return "";
-            }).top(Infinity);
-        }
-        else {}
-        console.log(filter + "(" + f.length + ") = " + JSON.stringify(f).replace("[", "[\n\t").replace(/}\,/g, "},\n\t").replace("]", "\n]"));
-    }
-
-    // Make things pretty
-    var format = d3.format(",");
-    var timeFormat = d3.time.format.iso;
-
-    // load csv file that contains the data
-    // pathing asssume things are run from public
-    // for where files are located
-
-    // pretty colors, no thoughtful assignment
-    var chartcolors = d3.scale.category20b();
+    d3NavRing();
+}; //Render Navigation Ring (aka NavRing) on page load
 
 
+//Implimentation of Navigation Ring
+function d3NavRing() {
+
+    //height & width & radius of navigation ring
     var w = 400;
     var h = 400;
     var r = h / 2;
 
-
+    //get some nice colors via d3
     var color = d3.scale.category20c();
 
+    //NavRing definition
     var data = [{
         "label": "News",
-        "value": 30
+        "value": 30,
+        "dataid": "divId1"
     }, {
         "label": "Chart",
-        "value": 30
+        "value": 30,
+        "dataid": "divId2"
     }, {
         "label": "Events",
-        "value": 30
+        "value": 30,
+        "dataid": "divId3"
     }];
 
+    //Buy button/circle definition
     var bigbuy = [{
         "label": "BUY!",
         "value": 1
     }];
 
+    //Use the div with an id of navring as location for the 
+    //NavRing control
+    var vis = d3.select('#navring')
+        .append("svg:svg")
+        .data([data])
+        .attr("width", w)
+        .attr("height", h)
+        .append("svg:g")
+        .attr("transform", "translate(" + r + "," + r + ")");
 
-    var vis = d3.select('#navring').append("svg:svg").data([data]).attr("width", w).attr("height", h).append("svg:g").attr("transform", "translate(" + r + "," + r + ")");
-    var pie = d3.layout.pie().value(function(d) {
-        return d.value;
-    });
+    //Declare a pie chart layout with values from our data
+    //defined above
+    var pie = d3.layout.pie()
+        .value(function(d) {
+            return d.value;
+        });
 
-    // declare an arc generator function
+    //declare an arc generator function
     var arc = d3.svg.arc().outerRadius(r);
 
 
-    // select paths, use arc generator to draw
-    var arcs = vis.selectAll("g.slice").data(pie).enter().append("svg:g").attr("class", "slice");
+    //select paths, use arc generator to draw
+    var arcs = vis.selectAll("g.slice")
+        .data(pie)
+        .enter()
+        .append("svg:g")
+        .attr("class", "slice");
+
+    //add functionality and event actions to the various arcs
+    //as definite in the data above
     arcs.append("svg:path")
         .attr("fill", function(d, i) {
             return color(i);
         })
-        /*    .attr("d", function (d) {
-                // log the result of the arc generator to show how cool it is :)
-                console.log(arc(d));
-                return arc(d);*/
+        .on("click", function(d) {
+            var hello = d.data.dataid;
+            $('.hideDivs').hide();
+            $('#' + hello).show();
+        })
         .attr("d", function(d, i, j) {
             return arc.innerRadius(100 + r * j).outerRadius(r * (j + 1))(d);
         });
 
-    // add the text
-    arcs.append("svg:text").attr("transform", function(d) {
-        d.innerRadius = 0;
-        d.outerRadius = r;
-        return "translate(" + arc.centroid(d) + ")";
-    }).attr("text-anchor", "middle").text(function(d, i) {
-        return data[i].label;
-    });
+    //add the text
+    arcs.append("svg:text")
+        .attr("transform", function(d) {
+            d.innerRadius = 0;
+            d.outerRadius = r;
+            return "translate(" + arc.centroid(d) + ")";
+        })
+        .attr("text-anchor", "middle")
+        .text(function(d, i) {
+            return data[i].label;
+        });
 
-
+    //Center circle with "BUY", takes user to a broker 
+    //so they can buy the stock
     var circle = vis.append("circle")
         .attr("cx", 0)
         .attr("cy", 0)
@@ -113,16 +107,13 @@ function dcjsdemo() {
         .on("mouseover", function() {
             d3.select(this)
                 .style("fill", "orange");
-
         })
         .on("mouseout", function() {
             d3.select(this)
                 .style("fill", "steelblue");
-
         });
 
-
-
+    //beautify the big buy button
     var circletxt = vis.selectAll("text")
         .data("bigbuy")
         .enter()
@@ -132,6 +123,4 @@ function dcjsdemo() {
         .attr("font-size", "29px")
         .attr("fill", "Black")
         .attr("text-anchor", "middle");
-
-
 }
